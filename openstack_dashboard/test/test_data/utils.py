@@ -17,6 +17,7 @@ def load_test_data(load_onto=None):
     from . import exceptions
     from . import glance_data
     from . import keystone_data
+    from . import management_data
     from . import nova_data
     from . import quantum_data
     from . import swift_data
@@ -27,7 +28,8 @@ def load_test_data(load_onto=None):
                glance_data.data,
                nova_data.data,
                quantum_data.data,
-               swift_data.data)
+               swift_data.data,
+               management_data.data)
     if load_onto:
         for data_func in loaders:
             data_func(load_onto)
