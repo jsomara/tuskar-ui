@@ -18,6 +18,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from cinderclient import exceptions as cinderclient
 from glanceclient.common import exceptions as glanceclient
 from keystoneclient import exceptions as keystoneclient
@@ -41,7 +43,10 @@ NOT_FOUND = (keystoneclient.NotFound,
              novaclient.NotFound,
              glanceclient.NotFound,
              quantumclient.NetworkNotFoundClient,
-             quantumclient.PortNotFoundClient)
+             quantumclient.PortNotFoundClient,
+             # FIXME: this exception and the related import should be replaced
+             #        by the one thrown by the management api client
+             ObjectDoesNotExist)
 
 # NOTE(gabriel): This is very broad, and may need to be dialed in.
 RECOVERABLE = (keystoneclient.ClientException,
