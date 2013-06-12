@@ -21,4 +21,7 @@ from django.forms import widgets
 # Convenience imports for public API components.
 from .base import SelfHandlingMixin, SelfHandlingForm, DateForm
 from .views import ModalFormView, ModalFormMixin
-from .fields import DynamicTypedChoiceField, DynamicChoiceField
+
+"""FIXME: TableStep hack adding NumberInput"""
+from .fields import DynamicTypedChoiceField, DynamicChoiceField, NumberInput
+"""FIXME: TableStep end"""
