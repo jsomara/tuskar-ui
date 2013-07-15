@@ -42,4 +42,4 @@ from openstack_dashboard.api import nova
 from openstack_dashboard.api import quantum
 from openstack_dashboard.api import lbaas
 from openstack_dashboard.api import swift
-from openstack_dashboard.api import management
+from openstack_dashboard.api import tuskar

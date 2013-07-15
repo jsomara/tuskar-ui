@@ -17,10 +17,10 @@ def load_test_data(load_onto=None):
     from . import exceptions
     from . import glance_data
     from . import keystone_data
-    from . import management_data
     from . import nova_data
     from . import quantum_data
     from . import swift_data
+    from . import tuskar_data
 
     # The order of these loaders matters, some depend on others.
     loaders = (exceptions.data,
@@ -29,7 +29,7 @@ def load_test_data(load_onto=None):
                nova_data.data,
                quantum_data.data,
                swift_data.data,
-               management_data.data)
+               tuskar_data.data)
     if load_onto:
         for data_func in loaders:
             data_func(load_onto)
