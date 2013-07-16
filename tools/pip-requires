@@ -14,6 +14,7 @@ python-novaclient>=2.12.0,<3
 python-quantumclient>=2.2.0,<3.0.0
 python-swiftclient>1.1,<2
 pytz
+-e git://github.com/tuskar/python-tuskarclient.git#egg=python-tuskarclient
 
 # Horizon Utility Requirements
 lockfile # for SECURE_KEY generation
