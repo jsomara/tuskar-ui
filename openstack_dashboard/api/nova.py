@@ -31,6 +31,7 @@ from novaclient.v1_1 import client as nova_client
 from novaclient.v1_1 import security_group_rules as nova_rules
 from novaclient.v1_1.security_groups import SecurityGroup as NovaSecurityGroup
 from novaclient.v1_1.servers import REBOOT_HARD, REBOOT_SOFT
+from novaclient.v1_1.contrib import baremetal
 
 from horizon.conf import HORIZON_CONFIG
 from horizon.utils.memoized import memoized
