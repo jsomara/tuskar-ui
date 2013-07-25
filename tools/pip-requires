@@ -4,7 +4,10 @@ pbr>=0.5,<0.6
 # Horizon Core Requirements
 Django>=1.4,<1.6
 django_compressor
-django_openstack_auth>=1.0.8
+# FIXME: we are not compatible with newest auth lib, we have to merge with
+# upstream at first, for now, restrict version to <1.1
+#django_openstack_auth>=1.0.8
+django_openstack_auth>=1.0.8,<1.1
 iso8601>=0.1.4
 netaddr
 python-cinderclient>=1.0.2,<2.0.0
