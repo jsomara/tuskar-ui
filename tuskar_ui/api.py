@@ -180,37 +180,56 @@ class Node(StringIdAPIResourceWrapper):
 
     @classmethod
     def get(cls, request, node_id):
+        #10:04 < jomara> question 1: should that "enrichment" not happen in tuskar, and get sent to us when we query tuskar?
+        #10:04 < lsmola> jomara, each nova instance has a foreign key to  nova baremetal instance (hypervisor something)
+        #10:05 < lsmola> jomara, I was talking about that with jistr and pblaho
+        #10:05 < jomara> right, that is why it iterates over the list of nova instances to match with the baremetal id
+        #10:05 < lsmola> jomara, the thing is they don't really represent a node now
+        #10:05 < lsmola> jomara, for now the optimization would be to use nova search functionality (hope there is one)
+        #10:06 < lsmola> jomara, so just get the ID's of instances from Tuskar (racks)
+        #10:07 < lsmola> jomara, then make a search query using baremetal ids to NovaBaremetal that will return exactly a list of needed instances
+        #10:08 < lsmola> jomara, then make a search query to Nova matching baremetal ID's to Hypervisor ID, that will return only the nova instances needed
+        #10:08 < lsmola> jomara, then join this in python
+        #10:10 < lsmola> jomara, then we can shift this algorithm to API, if API guys will decide to represent Node entity after all
+        #10:10 < lsmola> jomara, it's needed to make this work for a Get and the List methods
+        #10:11 < lsmola> jomara, for the list methods, it's needed to pre-fetch all needed data and cache them to some object, so there is only 3 API calls
+        #10:13 < lsmola> jomara, always ResourceClasses---Racks---Nodes (there will be more calls), Nova Search, and Nova Baremetal Search
+        #10:15 < lsmola> jomara, I am not sure but by calling ResourceClass.list_racks you may get all info you need (list of nodes) or you may be forced to call get on each Rack
+
+        # request nova_baremetal node from baremetal client
+        #
         node = cls(baremetalclient(request).get(node_id))
         node.request = request
 
-        # FIXME ugly, fix after demo, make abstraction of instance details
-        # this is realy not optimal, but i dont hve time do fix it now
+        # nova baremetal node has 1 nova baremetal instance, mapped to 'hypervisor_hostname'
+        search_opts = { 'paginate': True, 'OS-EXT-SRV-ATTR:hypervisor_hostname': node_id }
         instances, more = nova.server_list(
-            request,
-            search_opts={'paginate': True},
-            all_tenants=True)
+                request,
+                search_opts,
+                all_tenants=True)
 
-        instance_details = {}
-        for instance in instances:
-            id = (instance.
-                  _apiresource._info['OS-EXT-SRV-ATTR:hypervisor_hostname'])
-            instance_details[id] = instance
-
-        detail = instance_details.get(node_id)
+        # join details from instance to node object
+        detail = instances[0]
         if detail:
-            addresses = detail._apiresource.addresses.get('ctlplane')
-            if addresses:
-                node.ip_address_other = (", "
-                    .join([addr['addr'] for addr in addresses]))
-
-            node.status = detail._apiresource._info['OS-EXT-STS:vm_state']
-            node.power_management = ""
-            if node.pm_user:
-                node.power_management = node.pm_user + "/********"
+            update_node_details(node, detail)
         else:
             node.status = 'unprovisioned'
 
         return node
+
+
+    @classmethod
+    def update_node_details(cls, node, detail):
+          addresses = detail._apiresource.addresses.get('ctlplane')
+          if addresses:
+              node.ip_address_other = (", "
+                  .join([addr['addr'] for addr in addresses]))
+
+          node.status = detail._apiresource._info['OS-EXT-STS:vm_state']
+          node.power_management = ""
+          if node.pm_user:
+              node.power_management = node.pm_user + "/********"
+
 
     @classmethod
     def list(cls, request):
