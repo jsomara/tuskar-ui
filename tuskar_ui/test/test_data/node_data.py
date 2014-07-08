@@ -24,7 +24,7 @@ def data(TEST):
     bm_node_1 = baremetal.BareMetalNode(
         baremetal.BareMetalNodeManager(None),
         {'id': '1',
-         'uuid': 'aa-11',
+         'uuid': 'd0ace338-a702-426a-b344-394ce861e070',
          'instance_uuid': 'aa',
          "service_host": "undercloud",
          "cpus": 1,

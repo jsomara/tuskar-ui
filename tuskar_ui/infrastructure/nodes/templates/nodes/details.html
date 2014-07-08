@@ -45,7 +45,18 @@
       <dd>{{ node.properties.cpu|default:"&mdash;" }}</dd>
     </dl>
   </div>
+
 </div>
+
+{% if node.uuid %}
+<div>
+<h2>{% trans "Content" %}</h2>
+  <div ng-controller="ErrataController">
+     <div satellite-errata uuid="'{{ node.uuid }}'"></div>
+  </div>
+</div>
+{% endif %}
+
 
 <h2>{% trans "Performance and Capacity" %}</h2>
 
@@ -142,3 +153,4 @@
   Metering service is not enabled.
 {% endif %}
 {% endblock %}
+
