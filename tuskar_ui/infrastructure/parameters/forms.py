@@ -28,11 +28,25 @@ import tuskar_ui.forms
 LOG = logging.getLogger(__name__)
 
 
+VIRT_TYPE_CHOICES = [
+    ('virtualized', _("Virtualized")),
+    ('baremetal', _("Baremetal")),
+]
+
 class EditServiceConfig(horizon.forms.SelfHandlingForm):
+    virt_type = django.forms.ChoiceField(
+        label=_("Deployment Type"),
+        choices=VIRT_TYPE_CHOICES,
+        required=True,
+        widget=django.forms.Select(attrs={
+            'class': 'form-control switchable',
+            'data-slug': 'virt-type',
+        }),
+    )
     def __init__(self, *args, **kwargs):
         super(EditServiceConfig, self).__init__(*args, **kwargs)
         self.plan = api.tuskar.Plan.get_the_plan(self.request)
-        self.fields.update(self._service_config_fields(self.plan))
+    #    self.fields.update(self._service_config_fields(self.plan))
 
     def _service_config_fields(self, plan):
         fields = {}

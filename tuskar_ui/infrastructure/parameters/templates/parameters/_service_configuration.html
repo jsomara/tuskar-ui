@@ -1,49 +1,19 @@
+{% extends "horizon/common/_modal_form.html" %}
 {% load i18n %}
 {% load url from future %}
-{% load form_helpers %}
-<h4>{% trans "Service Configuration" %}</h4>
 
-<form method="POST" action="." class="service-configuration-form">
-    <div class="row-fluid">
-        <div class="col-sm-3">
-            <ul class="nav nav-pills" role="tablist">
-              <li>
-                  <a href="#network" role="tab" data-toggle="tab">{% trans 'Network Parameters' %}</a>
-              </li>
-              <li>
-                  <a href="#basic" role="tab" data-toggle="tab">{% trans 'Default Parameters' %}</a>
-              </li>
-            </ul>
-        </div>
-        <div class="col-sm-9 tab-content">
-            <div class="tab-pane" id="network">
-                {% include "horizon/common/_form_fields.html" %}
-                    {% csrf_token %}
-                    {% include 'horizon/common/_form_errors.html' with form=form %}
-                    {% for field in form.network_fields %}
-                        <div class="form-group well well-sm clearfix{% if field.errors %} error{% endif %} {{ field.css_classes }}">
-                          <div class="col-sm-2">
-                            {{ field|add_bootstrap_class }}
-                          </div>
-                          <div class="col-sm-10">
-                            {{ field.label }}
-                            {% for error in field.errors %}
-                            <span class="help-block"><span class="text-danger">
-                              {{ error }}
-                            </span></span>
-                            {% endfor %}
-                          </div>
-                        </div>
-                    {% endfor %}
-                    <hr>
-            </div>
-            <div class="tab-pane active" id="basic">
-                {% for field in form.basic_parameters %}
-                  <div><strong>{{ field.label }}</strong> : {{ field.value }}</div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    <input class="btn btn-primary pull-right" type="submit" value="{% trans "Save Configuration" %}" />
-    <a href="{% url 'horizon:infrastructure:overview:index' %}" class="btn btn-default secondary cancel close">{% trans "Cancel" %}</a>
-</form>
+{% block form_id %configuration_form{% endblock %}
+{% block form_action %}{% url 'horizon:infrastructure:overview:deploy_confirmation' %}{% endblock %}
+
+{% block modal_id %}provision_modal{% endblock %}
+{% block modal-header %}{% trans "Service Configuration" %}{% endblock %}
+
+{% block modal-body %}
+{% include "formset_table/menu_formset.html" with formset=form  form_template="infrastructure/parameters/_parameters_formset_form.html" %}
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary" type="submit" value="{% trans "Save Configuration" %}" />
+  <a href="{% url 'horizon:infrastructure:parameters:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
+{% load form_helpers %}
