@@ -22,5 +22,5 @@ urlpatterns = urls.patterns(
     urls.url(r'^$', views.IndexView.as_view(), name='index'),
     urls.url(r'^service-config$',
              views.ServiceConfigView.as_view(),
-             name='deploy_confirmation'),
+             name='service_configuration'),
 )

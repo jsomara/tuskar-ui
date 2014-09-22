@@ -37,7 +37,7 @@ class ServiceConfigView(horizon.forms.ModalFormView):
         return form_class(self.request, **self.get_form_kwargs())
 
     def get_context_data(self, *args, **kwargs):
-        context = super(IndexView, self).get_context_data(*args, **kwargs)
+        context = super(ServiceConfigView, self).get_context_data(*args, **kwargs)
         context.update(self.get_data(self.request, context))
         return context
     

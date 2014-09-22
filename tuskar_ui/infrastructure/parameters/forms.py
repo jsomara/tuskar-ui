@@ -36,10 +36,10 @@ class EditServiceConfig(horizon.forms.SelfHandlingForm):
 
     def _service_config_fields(self, plan):
         fields = {}
-        for p in _param_list():
+        for p in self._param_list():
             field = django.forms.CharField(
                 label=p.get('name'),
-                required=false,
+                required=False,
             )
             fields[p.get('name')] = field
         return fields
