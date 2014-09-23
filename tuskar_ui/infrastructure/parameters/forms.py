@@ -46,16 +46,19 @@ class EditServiceConfig(horizon.forms.SelfHandlingForm):
     def __init__(self, *args, **kwargs):
         super(EditServiceConfig, self).__init__(*args, **kwargs)
         self.plan = api.tuskar.Plan.get_the_plan(self.request)
-    
+   
+    def _load_virt_type_parameters(self, data):
+	virt_type = data.get('virt_type')
+	parameters = {'compute-1::NovaComputeLibvirtType': virt_type}
+	return parameters
+ 
     def handle(self, request, data):
-	LOG.error('Your fields, sire')
-	LOG.error(self.fields)
-        parameters = dict(
-            (name, data[name])
-            for (name, field) in self.fields.items()
-        )
+	base_parameters = self._load_virt_type_parameters(data)
         try:
-            self.plan.patch(request, self.plan.uuid, parameters)
+            LOG.error('Patching plan:')
+	    LOG.error(self.plan.uuid)
+	    LOG.error(base_parameters)
+            self.plan.patch(request, self.plan.uuid, base_parameters)
         except Exception as e:
             horizon.exceptions.handle(request, _("Unable to update the service configuration."))
             LOG.exception(e)
