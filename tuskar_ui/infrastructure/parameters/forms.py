@@ -43,6 +43,13 @@ class EditServiceConfig(horizon.forms.SelfHandlingForm):
             'data-slug': 'virt-type',
         }),
     )
+    snmp_password = django.forms.CharField(
+        label=_("SNMP Password"),
+        required=False,
+        widget=django.forms.PasswordInput(render_value=False, attrs={
+            'class': 'form-control switched',
+        }),
+    )
     def __init__(self, *args, **kwargs):
         super(EditServiceConfig, self).__init__(*args, **kwargs)
         self.plan = api.tuskar.Plan.get_the_plan(self.request)
@@ -51,9 +58,15 @@ class EditServiceConfig(horizon.forms.SelfHandlingForm):
 	virt_type = data.get('virt_type')
 	parameters = {'compute-1::NovaComputeLibvirtType': virt_type}
 	return parameters
+
+    def _load_snmp_parameters(self, params, data):
+	password = data.get('snmp_password')
+	params['compute-1::SnmpdReadonlyUserPassword'] = password
+	params['controller-1::SnmpdReadonlyUserPassword'] = password
  
     def handle(self, request, data):
 	base_parameters = self._load_virt_type_parameters(data)
+	self._load_snmp_parameters(base_parameters, data)
         try:
             LOG.error('Patching plan:')
 	    LOG.error(self.plan.uuid)
